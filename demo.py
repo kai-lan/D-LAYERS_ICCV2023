@@ -5,9 +5,9 @@ from layers.utils import MeshViewer, select_verts_faces
 
 def main():
     # Variables
-    data_root = 'data/demo'
-    smpl_dir = 'data/smpl'
-    sample = '00396'
+    data_root = '/data2/D-Layers/D-LAYERS___D-LAYERS'
+    smpl_dir = '/data2/D-Layers/D-LAYERS___D-LAYERS/data/smpl/model'
+    sample = '00346'
     frame = 3
 
     m_viewer = MeshViewer()
