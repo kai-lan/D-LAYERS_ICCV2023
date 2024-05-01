@@ -9,17 +9,17 @@ from layers.datasets.smpl.smpl_np import SMPLModel, NUM_SMPL_JOINTS
 META_FN = 'meta.json'
 
 GARMENT_TYPE = [
-    'jacket', 
+    'jacket',
     'jacket_hood',
-    'jumpsuit_sleeveless', 
-    'tee', 
+    'jumpsuit_sleeveless',
+    'tee',
     'tee_sleeveless',
-    'dress_sleeveless', 
+    'dress_sleeveless',
     'wb_dress_sleeveless',
-    'wb_pants_straight', 
+    'wb_pants_straight',
     'pants_straight_sides',
-    'skirt_2_panels', 
-    'skirt_4_panels', 
+    'skirt_2_panels',
+    'skirt_4_panels',
     'skirt_8_panels',
 ]
 
@@ -41,8 +41,8 @@ class LayersReader:
 			'male': SMPLModel(os.path.join(smpl_dir, 'model_m.pkl'))
 		}
 
-    """ 
-	Read sample info 
+    """
+	Read sample info
 	Input:
 	- sample: name of the sample e.g.:'01_01_s0'
 	"""
@@ -50,7 +50,7 @@ class LayersReader:
         info_path = os.path.join(self.data_dir, 'data', sample, META_FN)
         infos = readJSON(info_path)
         return infos
-        
+
     """ Human data """
     """
 	Read SMPL parameters for the specified sample and frame
@@ -74,7 +74,7 @@ class LayersReader:
         # TODO: since when generating, the scale is not applied to the trans
         trans = trans[frame].reshape(self.smpl[gender].trans_shape) * info['human']['scale']
         return gender, pose, shape, trans
-	
+
     """
 	Computes human mesh for the specified sample and frame
 	Inputs:
@@ -96,12 +96,12 @@ class LayersReader:
         F = self.smpl[gender].faces.copy()
         V += root_offset
         return V, F
-    
+
     def read_human_joints(self, sample, frame, with_body=False):
         '''
             smpl output verts without root offset.
             When generating data using blender, we add root offset
-        
+
         '''
         # Read sample data
         info = self.read_info(sample)
@@ -132,7 +132,7 @@ class LayersReader:
         V -= trans
         V = V * info['human']['scale']
         return V
-    
+
     """ Garment data """
     """
 	Reads garment vertices location for the specified sample, garment and frame
@@ -141,10 +141,10 @@ class LayersReader:
 	- sample: name of the sample
 	- garment: type of garment (e.g.: 'Tshirt', 'Jumpsuit', ...)
 	- frame: frame number
-	- absolute: True for absolute vertex locations, False for locations relative to SMPL root joint	
+	- absolute: True for absolute vertex locations, False for locations relative to SMPL root joint
 	Outputs:
 	- V: 3D vertex locations for the specified sample, garment and frame
-    - F: mesh faces	
+    - F: mesh faces
 	"""
     def read_garment_vertices_topology(self, sample, garment, frame):
 		# Read garment vertices (relative to root joint)
@@ -156,21 +156,21 @@ class LayersReader:
         T = garment_seq['tpose']
         return V, F, T
 
-    """	
+    """
 	Reads garment UV map for the specified sample and garment
 	Inputs:
 	- sample: name of the sample
 	- garment: type of garment (e.g.: 'Tshirt', 'Jumpsuit', ...)
 	Outputs:
 	- Vt: UV map vertices
-	- Ft: UV map faces		
+	- Ft: UV map faces
 	"""
     def read_garment_UVMap(self, sample, garment):
 		# Read OBJ file
         uv_path = os.path.join(self.data_dir, 'data', sample, f"uv_{garment}.pkl")
         uv_groups = readPKL(uv_path)
         return uv_groups
-	
+
     def read_wind(self, sample, frame, info=None):
 		# Read garment vertices (relative to root joint)
         if info is None:
@@ -195,4 +195,3 @@ class LayersReader:
                     w_info = np.concatenate([rotations, strengths], axis=0)
                     break
         return w_info
-        
